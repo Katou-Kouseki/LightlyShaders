@@ -20,14 +20,13 @@
 #ifndef LIGHTLYSHADERS_H
 #define LIGHTLYSHADERS_H
 
-#include <kwineffects.h>
+#include <kwinoffscreeneffect.h>
 
 namespace KWin {
 
 class GLTexture;
 
-class Q_DECL_EXPORT LightlyShadersEffect : public Effect
-
+class Q_DECL_EXPORT LightlyShadersEffect : public OffscreenEffect
 {
     Q_OBJECT
 public:
@@ -41,7 +40,7 @@ public:
     void reconfigure(ReconfigureFlags flags) override;
     void paintScreen(int mask, const QRegion &region, ScreenPaintData &data) override;
     void prePaintWindow(EffectWindow* w, WindowPrePaintData& data, std::chrono::milliseconds time) override;
-    void paintWindow(EffectWindow* w, int mask, QRegion region, WindowPaintData& data) override;
+    void drawWindow(EffectWindow* w, int mask, const QRegion& region, WindowPaintData& data) override;
     virtual int requestedEffectChainPosition() const override { return 99; }
 
     enum { RoundedCorners = 0, SquircledCorners };
@@ -57,42 +56,36 @@ private:
 
     struct LSWindowStruct
     {
-        bool updateDiffTex;
         bool skipEffect;
-        bool hasFadeInAnimation;
         bool isManaged;
-        QRegion clip;
-        QMap<EffectScreen *, QList<GLTexture>> diffTextures;
-        std::chrono::milliseconds animationTime;
+        bool hasDecoration = false;
+        QVector2D shadowTexSize = QVector2D(0,0);
     };
 
     struct LSScreenStruct
     {
         qreal scale=1.0;
         int sizeScaled;
-        GLTexture *tex[NTex];
-        GLTexture *rect[NTex];
-        GLTexture *darkRect[NTex];
+        GLTexture *maskTex;
+        GLTexture *lightOutlineTex;
+        GLTexture *darkOutlineTex;
+        QRegion *maskRegion[NTex];
     };
 
     void genMasks(EffectScreen *s);
     void genRect(EffectScreen *s);
 
-    bool isValidWindow(EffectWindow *w);
+    bool isValidWindow(EffectWindow *w, int mask=0);
 
     void fillRegion(const QRegion &reg, const QColor &c);
-    GLTexture copyTexSubImage(const QRect &geo, const QRect &rect, qreal xTranslation=0.0, qreal yTranslation=0.0);
-    QList<GLTexture> getTexRegions(EffectWindow *w, const QRect* rect, const QRect &geo, int nTex, qreal xTranslation=0.0, qreal yTranslation=0.0, bool force=false);
-    void drawSquircle(QPainter *p, float size, int translate);
+    QPainterPath drawSquircle(float size, int translate);
     QImage genMaskImg(int size, bool mask, bool outer_rect);
-    void getShadowDiffs(EffectWindow *w, const QRect* rect, QList<GLTexture> &emptyCornersTextures, qreal xTranslation=0.0, qreal yTranslation=0.0, bool outOfScreen=false);
-    QRect scale(const QRect rect, qreal scaleFactor);
+    QRectF scale(const QRectF rect, qreal scaleFactor);
 
     int m_size, m_alpha, m_cornersType, m_squircleRatio, m_roundness, m_shadowOffset;
     bool m_outline, m_darkTheme, m_disabledForMaximized;
-    GLShader *m_shader, *m_diffShader;
+    std::unique_ptr<GLShader> m_shader;
     QSize m_corner;
-    qreal m_zoom=1.0, m_xTranslation=0, m_yTranslation=0;
 
     QMap<EffectScreen *, LSScreenStruct> m_screens;
     QMap<EffectWindow *, LSWindowStruct> m_windows;

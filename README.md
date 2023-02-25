@@ -5,37 +5,29 @@
     - [Ukrainian army](https://bank.gov.ua/en/about/support-the-armed-forces)
     - [Humanitarian aid to Ukraine](https://bank.gov.ua/en/about/humanitarian-aid-to-ukraine)
 
+# LightlyShaders v2.1
+ This is a fork of Luwx's [LightlyShaders](https://github.com/Luwx/LightlyShaders), which in turn is a fork of [ShapeCorners](https://sourceforge.net/projects/shapecorners/).  
 
- ![default](https://github.com/a-parhom/LightlyShaders/blob/master/screenshot.png)
- This is a fork of Luwx's [LightlyShaders](https://github.com/Luwx/LightlyShaders), which in turn is a fork of [ShapeCorners](https://sourceforge.net/projects/shapecorners/). 
+ It works correctly with stock Plasma effects:
 
- This fork fixes the infamous [bug](https://bugs.kde.org/show_bug.cgi?id=395725) with blurred corners, as well as the [bug](https://github.com/matinlotfali/KDE-Rounded-Corners/issues/2) with cut out shadows, though in a somehow hacky way. 
- 
- Also, it adds the following functionality:
- - an additional outer dark outline; 
- - an option to make dark outline totally black (good with dark themes);
- - an option to disable plugin for maximized windows;
- - an option to use squircled corners instead of rounded (based on code from ZacharyTalis's [ShapeCorners fork](https://github.com/ZacharyTalis/ShapeCorners));
- - support for scaling on Wayland (though, fractional scaling still may cause artifacts; only integer scaling works without issues for now);
- - support for multimonitor setups on Wayland including setups with different scaling factor per monitor (still needs some work, see [issue #51](https://github.com/a-parhom/LightlyShaders/issues/51)).
+ ![gif](https://github.com/a-parhom/LightlyShaders/blob/v2.0/lightly_shaders_2.0.gif)
 
+ ![default](https://github.com/a-parhom/LightlyShaders/blob/v2.0/screenshot.png)
 
-# Warnings:
+# Warning:
 
-## 1. This effect is basically a hack!
-Due to the changes introduced in Plasma 5.23 there is no way to draw original shadows under rounded corners any more. 
+## On Wayland corners may have "korner bug" when using blur due to the lack of API for adjusting blur region on Plasma 5.27.
 
-In order to work around that, this fork uses a hack that tries to restore the shadow in the cut out regions based on the data from the closest regions with shadows. 
+## This version heavily relies on window decorations, that correctly work with Plasma 5.25 "korner bug" fix!
+Currently I can confirm this effect correctly works with **SierraBreezeEnhanced** or default **Breeze** (though Breeze has hardcoded corner radius). You have to make sure, that your radius settings in window decorations match with settings in LightlyShaders.  
 
-Because of this it may work differently with different themes, corner radiuses or shadow settings. **Your mileage may vary.**
-
-## 2. This effect can be resource-hungry!
-Thanks to recent changes the performance of this plugin has improved. But depending on your hardware, you still can have performance hit.
+## Alternatively you can try my new project: [RoundedSBE](https://github.com/a-parhom/RoundedSBE)
+This is a fork of **SierraBreezeEnhanced** window decoration with a built-in corner-rounding effect **CornersShader** - a simplified version of LightlyShaders, integrated with RoundedSBE's configuration. It is in it's early stage, may have bugs and/or missing features.
 
 
 # Dependencies:
  
-Plasma >= 5.23 (X11 and Wayland supported).
+Plasma >= 5.27 (5.27.1 to fix issue #87).
  
 Debian based (Ubuntu, Kubuntu, KDE Neon):
 ```
@@ -58,7 +50,9 @@ sudo zypper install git cmake gcc-c++ extra-cmake-modules libqt5-qttools-devel l
 ```
 git clone https://github.com/a-parhom/LightlyShaders
 
-cd LightlyShaders; mkdir qt5build; cd qt5build; cmake ../ -DCMAKE_INSTALL_PREFIX=/usr && make && sudo make install && (kwin_x11 --replace &)
+cd LightlyShaders;
+
+mkdir qt5build; cd qt5build; cmake ../ -DCMAKE_INSTALL_PREFIX=/usr && make && sudo make install && (kwin_x11 --replace &)
 ```
 
 ## Note
