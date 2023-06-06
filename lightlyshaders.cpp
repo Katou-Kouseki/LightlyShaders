@@ -201,7 +201,6 @@ LightlyShadersEffect::windowAdded(EffectWindow *w)
             || w->windowClass().contains("ulauncher", Qt::CaseInsensitive)
             || w->windowClass().contains("ksplash", Qt::CaseInsensitive)
             || w->windowClass().contains("ksmserver", Qt::CaseInsensitive)
-            || w->windowClass().contains("netease-cloud-music", Qt::CaseInsensitive) //网易云音乐 桌面歌词
             || w->windowClass().contains("tim.exe", Qt::CaseInsensitive) // Wine TIM
             || w->windowClass().contains("wechat.exe", Qt::CaseInsensitive) // Wine 微信
             || w->windowClass().contains("wechatapp.exe", Qt::CaseInsensitive) // Wine 微信（小程序）
