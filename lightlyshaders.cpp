@@ -192,6 +192,7 @@ LightlyShadersEffect::windowAdded(EffectWindow *w)
         return;
 //    qDebug() << w->windowRole() << w->windowType() << w->windowClass();
     if (!w->hasDecoration() && (w->windowClass().contains("plasma", Qt::CaseInsensitive)
+            || w->windowClass().contains("kwin_wayland kwin_wayland", Qt::CaseInsensitive)
             || w->windowClass().contains("krunner", Qt::CaseInsensitive)
             || w->windowClass().contains("latte-dock", Qt::CaseInsensitive)
             || w->windowClass().contains("lattedock", Qt::CaseInsensitive)
