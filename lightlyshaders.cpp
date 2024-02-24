@@ -210,6 +210,7 @@ LightlyShadersEffect::windowAdded(EffectWindow *w)
             || w->windowClass().contains("todesk", Qt::CaseInsensitive) // ToDesk
             || w->windowClass().contains("genshinimpact.exe", Qt::CaseInsensitive) // 原神
             || w->windowClass().contains("org.jackhuang.hmcl.launcher", Qt::CaseInsensitive) // HMCL
+            || w->windowClass().contains("audaciouslyricsqml", Qt::CaseInsensitive) // AudaciousLyricsQML
             || (w->windowClass().contains("reaper", Qt::CaseInsensitive) && !hasShadow(w))))
         return;
 
